@@ -31,6 +31,7 @@ service.interceptors.response.use(
         Message.success(res.data.msg);
         break;
       case 4003:
+        LoadingBar.error();
         Notice.open({
           title: '请先登录',
           desc: '可以使用语雀一键认证。',
@@ -39,6 +40,7 @@ service.interceptors.response.use(
         router.push("/login");
         break;
       case 3002:
+        LoadingBar.error();
         Notice.open({
           title: '请先完善信息',
           desc: '请确保邮箱可用，监控报警信息将发送至邮箱。',
@@ -47,6 +49,7 @@ service.interceptors.response.use(
         router.push("/userinfo");
         break;
       default:
+        LoadingBar.error();
         Message.error(res.data.msg);
         break;
     }

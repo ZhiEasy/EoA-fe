@@ -26,10 +26,19 @@ export function deleteHost(data) {
   })
 }
 
-// 测试连接主机
+// 测试ssh连接主机
 export function testHostConn(data) {
   return request({
-    url: 'host/test',
+    url: 'host/ssh',
+    method: 'post',
+    data
+  })
+}
+
+// 测试 svr 连接主机
+export function testSvrConn(data) {
+  return request({
+    url: 'host/svr',
     method: 'post',
     data
   })
@@ -48,6 +57,24 @@ export function addHostWatch(data) {
 export function deleteHostWatch(data) {
   return request({
     url: 'host/watch',
+    method: 'delete',
+    params: data
+  })
+}
+
+// 增加负责人邮件
+export function addHostBlameEmail(data) {
+  return request({
+    url: 'host/blame',
+    method: 'post',
+    data
+  })
+}
+
+// 删除负责人邮件
+export function deleteHostBlameEmail(data) {
+  return request({
+    url: 'host/blame',
     method: 'delete',
     params: data
   })
