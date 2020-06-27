@@ -67,7 +67,7 @@
         <Button v-if="!row.can_watch" type="warning" size="small" @click="handleDeleteHostWatch(row.id)">取关</Button>
         <Button v-if="row.can_watch" type="warning" size="small" @click="handleAddHostWatch(row.id)">关注</Button>
         <Button v-if="row.can_del" size="small" @click="handleDeleteHost(row)">删除主机</Button>
-        <Button type="info" v-if="row.task_info === null" @click="show_add_task_host = true">创建监控</Button>
+        <Button type="info" v-if="row.task_info === null" @click="handleShowAddTaskModal(row.id)" size="small">创建监控</Button>
         <Button type="info" size="small" v-if="row.task_info !== null">取消监控</Button>
       </template>
     </Table>
@@ -205,6 +205,8 @@
           disk_max: 80
         },
         new_task_rule: {},
+
+        host_id: null,
       }
     },
     methods: {
@@ -266,19 +268,27 @@
         this.new_task_form.disk_line = [];
         this.new_task_form.disk_line.push(this.new_task_form.disk_min);
         this.new_task_form.disk_line.push(this.new_task_form.disk_max);
-        console.log(this.new_task_form);
 
         addHostInfoTask({
-          host_id: this.row.id,
+          host_id: this.host_id,
           description: this.new_task_form.description,
           spec: this.new_task_form.spec,
           mem_line: this.new_task_form.mem_line,
           cpu_line: this.new_task_form.cpu_line,
           disk_line: this.new_task_form.disk_line,
         }).then(res=>{
-          console.log(res);
+          if (res.status === 0) {
+            this.show_add_task_host = false;
+            this.$emit('getHostInfo');
+            this.host_id = null;
+          }
         })
-      }
+      },
+      handleShowAddTaskModal(id) {
+        this.host_id = id;
+        alert(id)
+        this.show_add_task_host = true
+      },
     }
   }
 </script>
