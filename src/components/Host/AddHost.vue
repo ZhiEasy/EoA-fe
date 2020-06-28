@@ -1,37 +1,72 @@
 <template>
   <div>
-    <Card style="width:500px; margin: 0 auto">
+    <Card style="width: 800px; margin: 0 auto">
       <p slot="title">
         添加主机
       </p>
-      <div style="text-align:center">
-        <Form ref="new_host_form" :model="new_host_form" :rules="new_host_rule">
-          <FormItem prop="email">
-            <Input type="text" v-model="new_host_form.ip" placeholder="IP地址"></Input>
-          </FormItem>
-          <FormItem prop="name">
-            <Input type="text" v-model="new_host_form.name" placeholder="主机名，如：校园地图前端服务器-1"></Input>
-          </FormItem>
-          <FormItem prop="description">
-            <Input type="textarea" v-model="new_host_form.description" placeholder="主机用途描述，如：前端服务器"></Input>
-          </FormItem>
-          <FormItem prop="login_name">
-            <Input type="text" v-model="new_host_form.login_name" placeholder="登录用户名"></Input>
-          </FormItem>
-          <FormItem prop="login_pwd">
-            <Input type="password" v-model="new_host_form.login_pwd" placeholder="登录密码(会被加密)"></Input>
-          </FormItem>
-          <FormItem prop="email_list">
-            <Input type="textarea" v-model="email_list" placeholder="责任人邮件，以';'分割，如：123@qq.com;456@qq.com"></Input>
-          </FormItem>
-          <FormItem>
-            <Button type="primary" @click="handleTestConn">测试SSH连接</Button>
-            <Button type="primary" @click="handleTestSvrConn">测试SVR连接</Button>
-          </FormItem>
-          <FormItem>
-            <Button type="primary" long @click="handleAddHost">添加</Button>
-          </FormItem>
-        </Form>
+      <div>
+        <Row>
+          <Col span="8">
+            <Timeline>
+              <TimelineItem>
+                <p class="time">在目标主机部署SVR</p>
+                <p class="content"></p>
+              </TimelineItem>
+              <TimelineItem>
+                <p class="time">在这里添加主机</p>
+                <p class="content"></p>
+              </TimelineItem>
+              <TimelineItem>
+                <p class="time">点击：SSH连接测试</p>
+                <p class="content"></p>
+              </TimelineItem>
+              <TimelineItem>
+                <p class="time">点击：SVR连接测试</p>
+                <p class="content"></p>
+              </TimelineItem>
+              <TimelineItem>
+                <p class="time">点击：添加</p>
+                <p class="content"></p>
+              </TimelineItem>
+              <TimelineItem>
+                <p class="time">开启监控</p>
+                <p class="content"></p>
+              </TimelineItem>
+            </Timeline>
+          </Col>
+
+          <Col span="16">
+            <div style="text-align:center">
+              <Form ref="new_host_form" :model="new_host_form" :rules="new_host_rule">
+                <FormItem prop="email">
+                  <Input type="text" v-model="new_host_form.ip" placeholder="IP地址"></Input>
+                </FormItem>
+                <FormItem prop="name">
+                  <Input type="text" v-model="new_host_form.name" placeholder="主机名，如：校园地图前端服务器-1"></Input>
+                </FormItem>
+                <FormItem prop="description">
+                  <Input type="textarea" v-model="new_host_form.description" placeholder="主机用途描述，如：前端服务器"></Input>
+                </FormItem>
+                <FormItem prop="login_name">
+                  <Input type="text" v-model="new_host_form.login_name" placeholder="登录用户名"></Input>
+                </FormItem>
+                <FormItem prop="login_pwd">
+                  <Input type="password" v-model="new_host_form.login_pwd" placeholder="登录密码(会被加密)"></Input>
+                </FormItem>
+                <FormItem prop="email_list">
+                  <Input type="textarea" v-model="email_list" placeholder="责任人邮件，以';'分割，如：123@qq.com;456@qq.com"></Input>
+                </FormItem>
+                <FormItem>
+                  <Button type="primary" @click="handleTestConn">测试SSH连接</Button>
+                  <Button type="primary" @click="handleTestSvrConn">测试SVR连接</Button>
+                </FormItem>
+                <FormItem>
+                  <Button type="primary" long @click="handleAddHost">添加</Button>
+                </FormItem>
+              </Form>
+            </div>
+          </Col>
+        </Row>
       </div>
     </Card>
   </div>
@@ -75,9 +110,9 @@
             return;
           }
         }
-        addHost(this.new_host_form).then(res=>{
+        addHost(this.new_host_form).then(res => {
           if (res.status === 0) {
-            this.$emit('onAddHost');
+            this.$emit('getHostInfo');
           }
         });
       },
@@ -87,7 +122,7 @@
           ip: this.new_host_form.ip,
           login_name: this.new_host_form.login_name,
           login_pwd: this.new_host_form.login_pwd
-        }).then(res=>{
+        }).then(res => {
           if (res.status === 0) {
             this.$Message.success(res.data.used)
           }
@@ -95,7 +130,7 @@
       },
       // 测试 svr 连接按钮点击
       handleTestSvrConn() {
-        testSvrConn({ip: this.new_host_form.ip}).then(res=>{
+        testSvrConn({ip: this.new_host_form.ip}).then(res => {
           if (res.status === 0) {
             this.$Message.success(res.data.used)
           }

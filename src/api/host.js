@@ -79,3 +79,12 @@ export function deleteHostBlameEmail(data) {
     params: data
   })
 }
+
+// 获取主机列表
+export function getHostInfoLog(query) {
+  return request({
+    url: 'host/info',
+    method: 'get',
+    params: query
+  })
+}

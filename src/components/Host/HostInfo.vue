@@ -4,6 +4,7 @@
       <template slot-scope="{ row }" slot="create_time">
         <p>{{ new Date(row.create_time).toLocaleDateString() }}</p>
         <p>{{ new Date(row.create_time).toLocaleTimeString() }}</p>
+        <Time :time="row.create_time" />
       </template>
       <template slot-scope="{ row }" slot="description">
         <span>{{ row.description === "" ? "暂无描述" : row.description }}</span>
@@ -54,7 +55,7 @@
               <p>{{row.task_info.user.email}}</p>
               <p>扫描间隔：{{row.task_info.spec}}</p>
               <p>开始时间：{{new Date(row.task_info.create_time).toLocaleDateString()}}</p>
-              <p>{{new Date(row.task_info.create_time).toLocaleTimeString()}}</p>
+              <p>{{new Date(row.task_info.create_time).toLocaleTimeString()}}【<Time :time="row.task_info.create_time" />】</p>
             </div>
           </Tooltip>
         </div>
@@ -67,8 +68,11 @@
         <Button v-if="!row.can_watch" type="warning" size="small" @click="handleDeleteHostWatch(row.id)">取关</Button>
         <Button v-if="row.can_watch" type="warning" size="small" @click="handleAddHostWatch(row.id)">关注</Button>
         <Button v-if="row.can_del" size="small" @click="handleDeleteHost(row)">删除主机</Button>
-        <Button type="info" v-if="row.task_info === null" @click="handleShowAddTaskModal(row.id)" size="small">创建监控</Button>
-        <Button type="info" size="small" v-if="row.task_info !== null">取消监控</Button>
+        <Button type="info" v-if="row.task_info === null" @click="handleShowAddTaskModal(row.id)" size="small">创建监控
+        </Button>
+
+        <!--        TODO 取消监控接口和前端操作-->
+        <Button type="info" size="small" v-if="row.task_info !== null" @click="handleDeleteHostInfoTask(row.task_info)">取消监控</Button>
       </template>
     </Table>
     <!--    创建主机监控表单   -->
@@ -122,7 +126,7 @@
 
 <script>
   import {getHostInfo, deleteHostWatch, addHostWatch, deleteHost} from '../../api/host'
-  import {addHostInfoTask} from '../../api/task'
+  import {addHostInfoTask, deleteHostInfoTask} from '../../api/task'
   import BaseInfo from "@/components/Host/BaseInfo";
 
   export default {
@@ -276,7 +280,7 @@
           mem_line: this.new_task_form.mem_line,
           cpu_line: this.new_task_form.cpu_line,
           disk_line: this.new_task_form.disk_line,
-        }).then(res=>{
+        }).then(res => {
           if (res.status === 0) {
             this.show_add_task_host = false;
             this.$emit('getHostInfo');
@@ -286,8 +290,29 @@
       },
       handleShowAddTaskModal(id) {
         this.host_id = id;
-        alert(id)
         this.show_add_task_host = true
+      },
+
+      // 删除主机监控
+      handleDeleteHostInfoTask(task_info) {
+        this.$Modal.confirm({
+          title: '谨慎操作',
+          content: `是否删除此监控任务<br/>
+                  监控名：${task_info.name}<br/>
+                  描述：${task_info.description}<br/>
+                  扫描间隔：${task_info.spec}<br/>
+                  创建者：${task_info.user.name} ${task_info.user.email}
+          `,
+          okText: "取消",
+          cancelText: "确定",
+          onCancel: () => {
+            deleteHostInfoTask({task_id: task_info.id}).then(res=>{
+              if (res.status === 0) {
+                this.$emit('getHostInfo')
+              }
+            })
+          }
+        });
       },
     }
   }

@@ -10,7 +10,7 @@
           <HostInfo @getHostInfo="getHostInfo" :hosts="hosts.not_watchs"></HostInfo>
         </TabPane>
         <TabPane label="添加主机" name="add_host">
-          <AddHost></AddHost>
+          <AddHost @getHostInfo="getHostInfo"></AddHost>
         </TabPane>
       </Tabs>
     </div>

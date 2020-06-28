@@ -8,3 +8,12 @@ export function addHostInfoTask(data) {
     data
   })
 }
+
+// 删除主机监控
+export function deleteHostInfoTask(data) {
+  return request({
+    url: 'task/host',
+    method: 'delete',
+    params: data
+  })
+}
