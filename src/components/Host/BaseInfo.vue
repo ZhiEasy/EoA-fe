@@ -81,6 +81,7 @@
 
 <script>
   import {deleteHostBlameEmail, addHostBlameEmail, getHostInfoLog} from '../../api/host'
+
   let echarts = require('echarts');
 
   export default {
@@ -97,7 +98,7 @@
           shortcuts: [
             {
               text: '1 week',
-              value () {
+              value() {
                 const end = new Date();
                 const start = new Date();
                 start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
@@ -106,7 +107,7 @@
             },
             {
               text: '1 month',
-              value () {
+              value() {
                 const end = new Date();
                 const start = new Date();
                 start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
@@ -115,7 +116,7 @@
             },
             {
               text: '3 months',
-              value () {
+              value() {
                 const end = new Date();
                 const start = new Date();
                 start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
@@ -164,13 +165,17 @@
       },
       // 获取监控日志信息
       handleGetHostInfoLog(start, end) {
+        this.chart.showLoading();
         getHostInfoLog({
           host_id: this.row.id,
           start: start,
           end: end
-        }).then(res=>{
+        }).then(res => {
           if (res.status === 0) {
             this.chart.setOption({
+              title: {
+                text: `${start} 至 ${end}`
+              },
               xAxis: {
                 data: res.data.time
               },
@@ -186,22 +191,52 @@
               legend: {
                 data: ['cpu', 'mem', 'disk']
               },
+              dataZoom: [
+                {
+                  type: 'slider',
+                  show: true,
+                  xAxisIndex: [0],
+                  start: 1,
+                  end: 35
+                },
+                {
+                  type: 'slider',
+                  show: true,
+                  yAxisIndex: [0],
+                  left: '93%',
+                  start: 1,
+                  end: 99
+                },
+                {
+                  type: 'inside',
+                  xAxisIndex: [0],
+                  start: 1,
+                  end: 35
+                },
+                {
+                  type: 'inside',
+                  yAxisIndex: [0],
+                  start: 1,
+                  end: 99
+                }
+              ],
               yAxis: {},
               series: [{
                 name: 'cpu',
                 type: 'line',
                 data: res.data.cpu
-              },{
+              }, {
                 name: 'mem',
                 type: 'line',
                 data: res.data.mem
-              },{
+              }, {
                 name: 'disk',
                 type: 'line',
                 data: res.data.disk
               }]
             })
           }
+          this.chart.hideLoading();
         })
       },
       // 当选择的日期发生改变
@@ -242,7 +277,7 @@
       };
 
       let today = new Date();
-      let start = new Date(new Date().setDate(today.getDay() - 7)).Format("yyyy-MM-dd");
+      let start = new Date(new Date().setDate(today.getDay() - 3)).Format("yyyy-MM-dd");
       let end = today.Format("yyyy-MM-dd");
       this.handleGetHostInfoLog(start, end);
 

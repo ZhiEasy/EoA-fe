@@ -4,8 +4,8 @@ import router from '../router'
 
 // 一个 axios 实例
 const service = axios.create({
-  baseURL: 'http://127.0.0.1:10240/',
-  // baseURL: 'http://39.101.176.8:10240/',
+  // baseURL: 'http://127.0.0.1:10240/',
+  baseURL: 'http://39.101.176.8:10240/',
   // baseURL: 'http://gaea.zhieasy.cn:10240/',
   withCredentials: true, // send cookies when cross-domain requests
   headers: {

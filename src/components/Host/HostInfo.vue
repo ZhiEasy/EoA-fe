@@ -71,7 +71,6 @@
         <Button type="info" v-if="row.task_info === null" @click="handleShowAddTaskModal(row.id)" size="small">创建监控
         </Button>
 
-        <!--        TODO 取消监控接口和前端操作-->
         <Button type="info" size="small" v-if="row.task_info !== null" @click="handleDeleteHostInfoTask(row.task_info)">取消监控</Button>
       </template>
     </Table>
@@ -256,7 +255,7 @@
           onCancel: () => {
             deleteHost({host_id: host_info.id}).then(res => {
               if (res.status === 0) {
-                this.$emit('onDelHost')
+                this.$emit('getHostInfo')
               }
             })
           }
